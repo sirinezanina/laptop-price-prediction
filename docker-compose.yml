@@ -1,15 +1,16 @@
 version: "3.9"
+
 services:
   backend:
-    build:
-      context: ./backend
+    build: ./backend
     ports:
-      - "5000:5000"
+      - "5000:5000" # Local Flask backend
 
   frontend:
-    build:
-      context: ./frontend
+    build: ./frontend
     ports:
-      - "3000:3000"
+      - "3000:3000" # Local Next.js frontend (port 3000)
     environment:
-      - BACKEND_URL=http://laptop-price-backend-dxdhgtgkcthydqa4.centralus-01.azurewebsites.net # Use the Azure backend URL
+      - BACKEND_URL=http://laptop-price-backend-dxdhgtgkcthydqa4.centralus-01.azurewebsites.net # Azure backend URL
+    depends_on:
+      - backend

@@ -9,18 +9,16 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# 2. Production stage
-FROM node:18-alpine AS runner
+# 2. Production stage (using Nginx)
+FROM nginx:alpine
 
-WORKDIR /app
+# Copy static files from the builder
+COPY --from=builder /app/.next/static /usr/share/nginx/html/_next/static
+COPY --from=builder /app/public /usr/share/nginx/html/
 
-ENV NODE_ENV=production
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Only copy necessary files from builder
-COPY --from=builder /app/.next .next
-# COPY --from=builder /app/public public
-COPY --from=builder /app/package.json .
-COPY --from=builder /app/node_modules node_modules
+EXPOSE 80
 
-EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
