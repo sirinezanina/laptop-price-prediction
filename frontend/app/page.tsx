@@ -83,10 +83,11 @@ export default function LaptopForm() {
     e.preventDefault();
     const features: Features = extractFeatures();
   
-    const backendUrl = "https://laptop-price-backend-dxdhgtgkcthydqa4.centralus-01.azurewebsites.net"  // Use environment variable for the backend URL
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    // Use environment variable for the backend URL
   
-    console.log('Sending features to backend:', features);
-    console.log('Backend URL:', backendUrl);
+    //console.log('Sending features to backend:', features);
+    //console.log('Backend URL:', backendUrl);
     const res = await fetch(`${backendUrl}/predict`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
