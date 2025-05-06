@@ -3,16 +3,14 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json first to leverage Docker cache
-COPY package.json package-lock.json ./
+# Inject environment variable at build time
+ARG NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 
-# Install dependencies
+COPY package.json package-lock.json ./
 RUN npm install
 
-# Copy the rest of your project
 COPY . .
-
-# Build the Next.js app
 RUN npm run build
 
 # 2. Production stage
@@ -20,14 +18,10 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy the build output from the builder stage
 COPY --from=builder /app ./
-
-# Install only production dependencies
 RUN npm install --only=production
 
-# Expose port 80 (default for Next.js)
 EXPOSE 80
 
-# Start the Next.js app
-CMD ["npm", "start"]
+# Explicitly set port to 80
+CMD ["npm", "start", "--", "-p", "80"]
