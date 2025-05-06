@@ -1,37 +1,34 @@
-name: Build and Deploy to Azure
+name: CI/CD Deployment
 
 on:
   push:
     branches:
-      - main  # Change this to your branch name
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v2
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      # Azure login step
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-      
-      # Docker build and push steps here
-      - name: Build and push Docker image
-        run: |
-          docker build -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/backend:latest .
-          docker push ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/backend:latest
+    # Step 2: Login to Azure with hardcoded values (For show purposes)
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}"}'
+        enable-AzPSSession: false
+        environment: azurecloud
+        allow-no-subscriptions: false
+        audience: api://AzureADTokenExchange
+        auth-type: SERVICE_PRINCIPAL
 
-      # Deploy to Azure Web App
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ secrets.BACKEND_WEBAPP_NAME }}
-          images: ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/backend:latest
-          slot-name: production
+    # Step 3: Deploy to Azure WebApp
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: flask-nextjs-app
+        slot-name: production
+        images: flasknextjsapp.azurecr.io/backend:latest
