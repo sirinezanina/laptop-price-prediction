@@ -3,9 +3,9 @@ name: Deploy Full Stack App
 on:
   push:
     branches: [main]
-    paths:
-      - 'backend/**'  # Trigger on backend changes
-      - 'frontend/**' # Trigger on frontend changes
+    # paths:
+    #   - 'backend/**'  # Trigger on backend changes
+    #   - 'frontend/**' # Trigger on frontend changes
 
 jobs:
   deploy-backend:
