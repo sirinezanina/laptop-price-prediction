@@ -3,22 +3,31 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Copy package.json and package-lock.json first to leverage Docker cache
 COPY package.json package-lock.json ./
+
+# Install dependencies
 RUN npm install
 
+# Copy the rest of your project
 COPY . .
+
+# Build the Next.js app
 RUN npm run build
 
-# 2. Production stage (using Nginx)
-FROM nginx:alpine
+# 2. Production stage
+FROM node:18-alpine
 
-# Copy static files from the builder
-COPY --from=builder /app/.next/static /usr/share/nginx/html/_next/static
-COPY --from=builder /app/public /usr/share/nginx/html/
+WORKDIR /app
 
-# Copy Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy the build output from the builder stage
+COPY --from=builder /app ./
 
+# Install only production dependencies
+RUN npm install --only=production
+
+# Expose port 80 (default for Next.js)
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Start the Next.js app
+CMD ["npm", "start"]
