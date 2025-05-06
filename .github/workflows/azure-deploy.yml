@@ -1,0 +1,43 @@
+name: Azure Web App Deployment
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Login to Azure Container Registry (ACR)
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io
+          username: ${{ secrets.AZURE_REGISTRY_LOGIN }}
+          password: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+
+      # Build and push Docker images to ACR
+      - name: Build and Push Docker Images
+        run: |
+          docker build -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/frontend:latest ./frontend
+          docker build -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/backend:latest ./backend
+          docker push ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/frontend:latest
+          docker push ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/backend:latest
+
+      # Deploy to Azure Web Apps
+      - name: Deploy Backend to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.BACKEND_WEBAPP_NAME }}
+          images: ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/backend:latest
+
+      - name: Deploy Frontend to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.FRONTEND_WEBAPP_NAME }}
+          images: ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/frontend:latest

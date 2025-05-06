@@ -81,13 +81,15 @@ export default function LaptopForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const features: Features = extractFeatures();
-
-    const res = await fetch('http://localhost:5000/predict', {
+  
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';  // Use environment variable for the backend URL
+  
+    const res = await fetch(`${backendUrl}/predict`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(features),
     });
-
+  
     const data: PredictionResponse = await res.json();
     setPrediction(data.prediction);
   };
