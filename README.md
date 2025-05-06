@@ -1,16 +1,5 @@
 # AZURE-CICD-Deployment-with-Github-Actions
 
-## Save pass:
-
-
-## Run from terminal:
-
-docker build -t flasknextjsapp.azurecr.io/mltest:latest .
-
-docker login flasknextjsapp.azurecr.io
-
-docker push flasknextjsapp.azurecr.io/mltest:latest
-
 
 ## Deployment Steps:
 
