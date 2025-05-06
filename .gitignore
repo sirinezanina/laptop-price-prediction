@@ -1,0 +1,33 @@
+# ---------------------
+# Node.js / Next.js
+# ---------------------
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+frontend/.turbo/
+frontend/coverage/
+frontend/out/
+frontend/build/
+frontend/.DS_Store
+frontend/*.pem
+frontend/npm-debug.log*
+frontend/.env*
+frontend/.vercel/
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+
+# ---------------------
+# Python / Flask
+# ---------------------
+backend/__pycache__/
+backend/*.py[cod]
+backend/env/
+backend/venv/
+backend/.env
+
+# ---------------------
+# General
+# ---------------------
+*.log
+*.sqlite3
+.DS_Store
