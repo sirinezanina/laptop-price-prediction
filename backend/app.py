@@ -4,7 +4,10 @@ import joblib
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # allow requests from your React frontend
+CORS(
+    app,
+    resources={r"/predict": {"origins": "https://laptop-price-frontend-a5gwegdferb2e0ac.centralus-01.azurewebsites.net"}}
+)
 
 # Load your trained model
 model = joblib.load('model.joblib') 

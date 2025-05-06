@@ -83,7 +83,7 @@ export default function LaptopForm() {
     e.preventDefault();
     const features: Features = extractFeatures();
   
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:5000';  // Use environment variable for the backend URL
+    const backendUrl = "http://laptop-price-backend-dxdhgtgkcthydqa4.centralus-01.azurewebsites.net"  // Use environment variable for the backend URL
   
     console.log('Sending features to backend:', features);
     console.log('Backend URL:', backendUrl);
